@@ -21,7 +21,8 @@ class PyTest(TestCommand):
     def run_tests(self):
         #import here, cause outside the eggs aren't loaded
         import pytest
-        pytest.main(self.test_args)
+        import sys
+        sys.exit(pytest.main(self.test_args))
 
 class UninstallCommand(Command):
     description = "remove old files"
@@ -185,7 +186,8 @@ if opt.get('PAIR_MOD') == 'yes':
                             sources = [math_path + 'pairing/relic/pairingmodule3.c',
                                         math_path + 'pairing/relic/relic_interface.c',
                                         utils_path + 'base64.c'],
-                            libraries=['relic', 'gmp', 'crypto'], define_macros=_macros, undef_macros=_undef_macro)
+                            libraries=['relic', 'gmp', 'crypto'], define_macros=_macros, undef_macros=_undef_macro,
+                            library_dirs=library_dirs, runtime_library_dirs=runtime_library_dirs)
                             #extra_objects=[relic_lib], extra_compile_args=None)
 
     elif opt.get('USE_MIRACL') == 'yes':
@@ -213,7 +215,7 @@ if opt.get('INT_MOD') == 'yes':
                             include_dirs = [utils_path,
                                             benchmark_path],
                             sources = [math_path + 'integer/integermodule.c', 
-                                        utils_path + 'base64.c'], 
+                                        utils_path + 'base64.c'],
                             extra_link_args=linkargs,
                             library_dirs=libdirs,
                             language=lang,
@@ -226,7 +228,7 @@ if opt.get('ECC_MOD') == 'yes':
                 include_dirs = [utils_path,
                                 benchmark_path], 
 				sources = [math_path + 'elliptic_curve/ecmodule.c',
-                            utils_path + 'base64.c'], 
+                            utils_path + 'base64.c'],
                 extra_link_args=linkargs,
                             library_dirs=libdirs,
                             language=lang,
@@ -298,6 +300,7 @@ setup(name = 'Charm-Crypto',
 			'charm.schemes.pksig',
 			'charm.schemes.commit',
 			'charm.schemes.grpsig',
+            'charm.schemes.prenc',
 		    'charm.adapters',
                 ],
     license = 'LGPL',
